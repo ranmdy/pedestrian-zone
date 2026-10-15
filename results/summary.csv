@@ -1,19 +1,19 @@
 clip,frames,clip_seconds,ped_frames,zone_frames,zone_percent,zone_seconds,first_ped_seconds,max_box_height,crosswalk,signal,time_of_day,weather,note
-video_0007,120,4.0,83,0,0.0,0.0,0.0,258,,,,,
-video_0009,120,4.0,81,2,1.7,0.1,0.07,450,,,,,
-video_0010,90,3.0,44,12,13.3,0.4,1.13,427,,,,,
-video_0012,120,4.0,33,0,0.0,0.0,1.84,224,,,,,
-video_0015,420,14.0,104,0,0.0,0.0,0.97,150,,,,,
-video_0019,480,16.0,262,0,0.0,0.0,0.0,133,,,,,
-video_0020,540,18.0,515,136,25.2,4.5,0.0,657,,,,,
-video_0023,240,8.0,0,0,0.0,0.0,,0,,,,,
-video_0025,210,7.0,96,0,0.0,0.0,2.84,374,,,,,
-video_0026,510,17.0,282,0,0.0,0.0,0.0,280,,,,,
-video_0039,360,6.0,360,331,91.9,5.5,0.0,414,,,,,
-video_0041,360,6.0,237,144,40.0,2.4,0.58,299,,,,,
-video_0044,210,7.0,168,80,38.1,2.7,1.4,342,,,,,
-video_0046,210,7.0,161,73,34.8,2.4,0.0,340,,,,,
-video_0056,270,9.0,241,29,10.7,1.0,0.0,338,,,,,
-video_0099,180,6.0,59,19,10.6,0.6,0.0,935,,,,,
-video_0127,360,12.0,133,22,6.1,0.7,0.0,734,,,,,
-video_0137,210,7.0,182,157,74.8,5.2,0.3,683,,,,,
+video_0007,120,4.0,83,0,0.0,0.0,0.0,258,no,no,day,snow,snowy street and people cross mid-block on the left
+video_0009,120,4.0,81,2,1.7,0.1,0.07,450,no,no,day,clear,pedestrians cross mid-block and one pulls a cart
+video_0010,90,3.0,44,12,13.3,0.4,1.13,427,no,no,day,clear,pedestrian crosses mid-block ahead
+video_0012,120,4.0,33,0,0.0,0.0,1.84,224,yes,yes,day,clear,wide road ending at a signalised junction with crosswalk lines
+video_0015,420,14.0,104,0,0.0,0.0,0.97,150,yes,no,day,rain,wipers on and zebra crossing at a stop sign junction
+video_0019,480,16.0,262,0,0.0,0.0,0.0,133,no,no,day,clear,slow downtown traffic and pedestrians stay on the sidewalk
+video_0020,540,18.0,515,136,25.2,4.5,0.0,657,no,no,day,clear,downtown with a statue of human figures on the left
+video_0023,240,8.0,0,0,0.0,0.0,,0,yes,no,night,rain,dark and wet with yield triangles and a crossing sign
+video_0025,210,7.0,96,0,0.0,0.0,2.84,374,yes,no,day,clear,group crosses at a yield-triangle crossing
+video_0026,510,17.0,282,0,0.0,0.0,0.0,280,yes,no,night,clear,dark and pedestrians cross at a marked crossing ahead
+video_0039,360,6.0,360,331,91.9,5.5,0.0,414,yes,yes,day,clear,busy city junction with many people crossing in front
+video_0041,360,6.0,237,144,40.0,2.4,0.58,299,no,no,day,clear,low sun and snow beside the road and no markings seen
+video_0044,210,7.0,168,80,38.1,2.7,1.4,342,yes,no,day,clear,pedestrian crossover with overhead X sign and amber beacons
+video_0046,210,7.0,161,73,34.8,2.4,0.0,340,yes,no,day,clear,pedestrian crossover and one person crosses on the zebra
+video_0056,270,9.0,241,29,10.7,1.0,0.0,338,no,no,day,rain,wipers on and people cross mid-block before a garage entrance
+video_0099,180,6.0,59,19,10.6,0.6,0.0,935,yes,no,day,rain,second camera with wipers and a zebra crossing ahead
+video_0127,360,12.0,133,22,6.1,0.7,0.0,734,no,no,day,snow,second camera on a narrow street with snowbanks
+video_0137,210,7.0,182,157,74.8,5.2,0.3,683,yes,yes,day,rain,second camera and a person crosses at a signed crossing by lights

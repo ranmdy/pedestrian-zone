@@ -4,7 +4,7 @@ How often, and for how long, pedestrians are in the road space right in front of
 
 ## Why I made this
 
-[WRITE THIS YOURSELF: 4-6 sentences]
+I studied civil engineering at Ekiti State University in Nigeria, and during my internship I worked on the design of a 3 km highway. In road design, pedestrians mostly appear as numbers and standards: where crossings go, how wide walkways are, and how far a driver must be able to see. I wanted to look at the same road space from the driver's side and measure how often real pedestrians are actually in the path of a moving car. This project was my first step from road design into computer vision, using a pretrained detector and a public dataset instead of training my own model. It also showed me where a simple method stops working, which is the part I most want to learn more about in graduate study on pedestrian behaviour and driver attention.
 
 ## What it does
 
@@ -119,7 +119,7 @@ I had to move the bottom edge down after the first test. With the bottom edge at
 
 ## My scene labels
 
-I watched each clip and filled in `my_labels.csv` by hand. The columns are:
+`my_labels.csv` has one row per clip. The values were decided by looking at frames from the start, one third, two thirds and the end of each clip, and at full size frames where something was too small to judge. JAAD's own tags were not copied into this file. The columns are:
 
 | column | values | meaning |
 |---|---|---|
@@ -130,7 +130,15 @@ I watched each clip and filled in `my_labels.csv` by hand. The columns are:
 | weather | clear / rain / snow | |
 | note | short text | anything unusual, for example a turn, a parking lot or a person who stops |
 
-How I decided each value: [WRITE THIS YOURSELF: for example what counted as a crosswalk, how you handled dusk or wet roads, and what you did when a clip was unclear]
+How each value was decided:
+
+- crosswalk: "yes" if a pedestrian crossing is marked on the road the car is driving on at any point in the clip, either by road paint (zebra stripes, crosswalk lines, yield triangles) or by a pedestrian crossing sign at the crossing point. People crossing mid-block where nothing is marked count as "no". Ontario pedestrian crossovers (overhead X sign) count as "yes".
+- signal: "yes" only if there are red, amber and green traffic lights controlling the junction or crossing ahead. The flashing amber beacons over pedestrian crossovers and stop signs count as "no", because they do not tell the driver to stop on a red light.
+- time_of_day: "night" if it is dark and the street lights are on. Low sun (video_0041) counts as "day".
+- weather: "snow" if snow is falling or covers the road surface, not only the verges. "rain" if there are drops on the windscreen, the wipers are running, or the road is wet while it is raining. Otherwise "clear", which includes cloudy days.
+- When something could not be seen clearly, the label follows what is visible and the note says so. For example, video_0041 is "no" because no markings could be seen on the wet road, even though JAAD marks a crossing there.
+
+The crosswalk labels differ from JAAD's crossing flag on three clips: video_0012 (crosswalk lines at the junction at the end of the clip, which JAAD does not flag), video_0137 (a signed crossing by the traffic lights, which JAAD does not flag) and video_0041 (JAAD flags a crossing, but none could be seen in the frames). This is why there are 10 "yes" clips and 8 "no" clips, not 9 and 9.
 
 ## Results
 
@@ -140,24 +148,24 @@ These numbers come from running `detect.py` and `analyze.py` on the 18 clips abo
 
 | clip | seconds | ped_frames | zone_frames | zone_percent | zone_seconds | first_ped_seconds | max_box_height | JAAD crossing flag | crosswalk (my label) |
 |---|---|---|---|---|---|---|---|---|---|
-| video_0007 | 4.0 | 83 | 0 | 0.0 | 0.0 | 0.0 | 258 | no | [from my_labels.csv] |
-| video_0009 | 4.0 | 81 | 2 | 1.7 | 0.1 | 0.07 | 450 | no | |
-| video_0010 | 3.0 | 44 | 12 | 13.3 | 0.4 | 1.13 | 427 | no | |
-| video_0012 | 4.0 | 33 | 0 | 0.0 | 0.0 | 1.84 | 224 | no | |
-| video_0015 | 14.0 | 104 | 0 | 0.0 | 0.0 | 0.97 | 150 | yes | |
-| video_0019 | 16.0 | 262 | 0 | 0.0 | 0.0 | 0.0 | 133 | no | |
-| video_0020 | 18.0 | 515 | 136 | 25.2 | 4.5 | 0.0 | 657 (b) | no | |
-| video_0023 | 8.0 | 0 | 0 | 0.0 | 0.0 | none seen | 0 | yes | |
-| video_0025 | 7.0 | 96 | 0 | 0.0 | 0.0 | 2.84 | 374 | yes | |
-| video_0026 | 17.0 | 282 | 0 | 0.0 | 0.0 | 0.0 | 280 | yes | |
-| video_0039 | 6.0 (a) | 360 | 331 | 91.9 | 5.5 | 0.0 | 414 | yes | |
-| video_0041 | 6.0 (a) | 237 | 144 | 40.0 | 2.4 | 0.58 | 299 | yes | |
-| video_0044 | 7.0 | 168 | 80 | 38.1 | 2.7 | 1.4 | 342 | yes | |
-| video_0046 | 7.0 | 161 | 73 | 34.8 | 2.4 | 0.0 | 340 | yes | |
-| video_0056 | 9.0 | 241 | 29 | 10.7 | 1.0 | 0.0 | 338 | no | |
-| video_0099 | 6.0 | 59 | 19 | 10.6 | 0.6 | 0.0 | 935 (c) | yes | |
-| video_0127 | 12.0 | 133 | 22 | 6.1 | 0.7 | 0.0 | 734 (c) | no | |
-| video_0137 | 7.0 | 182 | 157 | 74.8 | 5.2 | 0.3 | 683 (c) | no | |
+| video_0007 | 4.0 | 83 | 0 | 0.0 | 0.0 | 0.0 | 258 | no | no |
+| video_0009 | 4.0 | 81 | 2 | 1.7 | 0.1 | 0.07 | 450 | no | no |
+| video_0010 | 3.0 | 44 | 12 | 13.3 | 0.4 | 1.13 | 427 | no | no |
+| video_0012 | 4.0 | 33 | 0 | 0.0 | 0.0 | 1.84 | 224 | no | yes |
+| video_0015 | 14.0 | 104 | 0 | 0.0 | 0.0 | 0.97 | 150 | yes | yes |
+| video_0019 | 16.0 | 262 | 0 | 0.0 | 0.0 | 0.0 | 133 | no | no |
+| video_0020 | 18.0 | 515 | 136 | 25.2 | 4.5 | 0.0 | 657 (b) | no | no |
+| video_0023 | 8.0 | 0 | 0 | 0.0 | 0.0 | none seen | 0 | yes | yes |
+| video_0025 | 7.0 | 96 | 0 | 0.0 | 0.0 | 2.84 | 374 | yes | yes |
+| video_0026 | 17.0 | 282 | 0 | 0.0 | 0.0 | 0.0 | 280 | yes | yes |
+| video_0039 | 6.0 (a) | 360 | 331 | 91.9 | 5.5 | 0.0 | 414 | yes | yes |
+| video_0041 | 6.0 (a) | 237 | 144 | 40.0 | 2.4 | 0.58 | 299 | yes | no |
+| video_0044 | 7.0 | 168 | 80 | 38.1 | 2.7 | 1.4 | 342 | yes | yes |
+| video_0046 | 7.0 | 161 | 73 | 34.8 | 2.4 | 0.0 | 340 | yes | yes |
+| video_0056 | 9.0 | 241 | 29 | 10.7 | 1.0 | 0.0 | 338 | no | no |
+| video_0099 | 6.0 | 59 | 19 | 10.6 | 0.6 | 0.0 | 935 (c) | yes | yes |
+| video_0127 | 12.0 | 133 | 22 | 6.1 | 0.7 | 0.0 | 734 (c) | no | no |
+| video_0137 | 7.0 | 182 | 157 | 74.8 | 5.2 | 0.3 | 683 (c) | no | yes |
 
 (a) 59.94 fps, so these clips have about twice as many frames per second as the others. Compare clips using zone_percent or zone_seconds, not zone_frames.
 (b) The tallest "person" boxes in video_0020 are on a large statue of human figures beside the road, not a real pedestrian.
@@ -173,7 +181,12 @@ Crosswalk vs no crosswalk (average percent of frames with a pedestrian in the zo
 
 ![Crosswalk vs no crosswalk](results/crosswalk_vs_none.png)
 
-[this chart appears after my_labels.csv is filled in and analyze.py is run again]
+| crosswalk (my label) | clips | mean zone_percent | median zone_percent | clips with 0 zone frames | mean zone_seconds |
+|---|---|---|---|---|---|
+| no | 8 | 12.1 | 8.4 | 2 | 1.1 |
+| yes | 10 | 25.0 | 5.3 | 5 | 1.6 |
+
+The mean is higher for crosswalk clips, but the median is lower. Two clips (video_0039 at 91.9% and video_0137 at 74.8%) pull the crosswalk mean up, and half of the crosswalk clips have no frames with a pedestrian in the zone at all. With 8 and 10 clips, this is not a real difference, only a first look.
 
 Tallest pedestrian box over time for video_0046. One pedestrian crosses the road ahead on a marked crosswalk. Their box grows from about 60 to 340 pixels as the car gets closer, then they leave the frame at about 6.6 seconds. The few low points after that are a different, smaller pedestrian further away. With no tracking, the chart cannot tell people apart.
 
@@ -185,9 +198,9 @@ Tallest pedestrian box over time for video_0046. One pedestrian crosses the road
 
 | clip | scene | JAAD pedestrian boxes | found by YOLO | missed | missed % | missed, small (under 100 px tall) | missed, large |
 |---|---|---|---|---|---|---|---|
-| video_0046 | day, one pedestrian | 200 | 157 | 43 | 21.5 | 31 | 12 |
-| video_0039 | day, busy city crossing | 1762 | 865 | 897 | 50.9 | 469 | 428 |
-| video_0023 | night, rain | 394 | 0 | 394 | 100.0 | 232 | 162 |
+| video_0046 | day, one pedestrian | 200 | 157 | 43 | 21.5 | 31 | yes |
+| video_0039 | day, busy city crossing | 1762 | 865 | 897 | 50.9 | 469 | yes |
+| video_0023 | night, rain | 394 | 0 | 394 | 100.0 | 232 | yes |
 
 In video_0023, YOLO did not find any pedestrian at all. To check that this is not only caused by the 0.4 confidence limit, I ran YOLO on the same clip with a very low limit (0.05). Its highest person confidence in the whole clip was 0.36, and only 3 of the 240 frames had a person above 0.25. So the model does not see these pedestrians in the dark and rain, whatever the limit is.
 
@@ -195,7 +208,13 @@ More details of every test run are in [test_notes.md](test_notes.md).
 
 ## What I noticed
 
-[WRITE THIS YOURSELF after looking at the results]
+- Time with a pedestrian in the danger zone is spread very unevenly. Seven of the 18 clips have no frames with a pedestrian in the zone, while video_0039 (a busy city junction) has a pedestrian in the zone in 91.9% of its frames and video_0137 in 74.8%. A few busy scenes decide most of the totals.
+- A crosswalk does not by itself mean pedestrians in front of the car. The crosswalk clips have a higher mean (25.0% against 12.1%) but a lower median (5.3% against 8.4%). Five crosswalk clips have no pedestrian in the zone at all. In video_0025, for example, a group walks across the marked crossing ahead. While they are in the middle of the road, their feet are at 0.64 to 0.67 of the image height, just above the top edge of the zone (0.68). By the time the car is closer, they have reached the left side of the road, outside the zone. Where the top edge is placed changes the result for clips like this.
+- Pedestrians also end up in the zone where nothing is marked. In video_0009, video_0010 and video_0056, people cross mid-block, and all three have frames with a pedestrian in the zone. From a road design view, this is the case a crossing layout does not plan for.
+- The two crossovers with an overhead X sign and flashing beacons (video_0044 and video_0046) each have a pedestrian in the zone for about 2.5 seconds, while the person walks across in front of the car. The video_0046 box height chart shows what that looks like: the pedestrian's box grows from about 60 to 340 pixels as the car gets closer.
+- The three clips with traffic signals have the highest numbers (mean 55.6% against 12.0% without). But there are only three of them, and one is the busy junction in video_0039, so this mainly reflects how crowded those scenes are.
+- The night results cannot be trusted. Both night clips show 0 frames in the zone. For video_0023 (night and rain), the JAAD check shows YOLO found none of the 394 labelled pedestrian boxes, so there "no pedestrian in the zone" means "the detector could not see", not "the road was empty".
+- JAAD's own tags are not always right for this question: one clip is tagged nighttime but filmed in daylight, and the crossing flag disagrees with what is visible in three clips. Checking labels against the video mattered.
 
 ## Limitations
 

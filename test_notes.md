@@ -174,3 +174,39 @@ The means are pulled up a lot by single clips (video_0039 at 91.9% in the crossi
 - Unusual numbers: every very tall box and the clip with zero pedestrians were looked into (see above).
 - check_against_jaad.py: on 2 test clips I also checked the matching by hand for one frame (video_0002, frame 100), and checked why some boxes were counted as missed.
 - All scripts are under about 125 lines, use plain settings at the top, and have no classes.
+
+# Part 3: scene labels and the crosswalk chart
+
+## How the labels were made
+
+For each clip, four frames were looked at (start, one third, two thirds, end). Where crossing markings or traffic lights were too small to judge, a full size crop of the road ahead was looked at too (video_0012 frame 118, video_0019 frame 320, video_0023 frame 160, video_0025 frame 140, video_0041 frame 240, video_0137 frame 140). The rules for each column are in the README section "My scene labels".
+
+## Where the labels differ from JAAD
+
+| clip | my crosswalk | JAAD crossing flag | what is visible |
+|---|---|---|---|
+| video_0012 | yes | no | crosswalk lines across the signalised junction at the end of the clip |
+| video_0137 | yes | no | blue pedestrian crossing sign and traffic lights where a person crosses |
+| video_0041 | no | yes | no markings could be seen on the wet road, only a pedestrian waiting and crossing |
+
+Also, JAAD tags video_0127 as nighttime and video_0041 as evening. Both are labelled "day" here, because video_0127 is in daylight and video_0041 has low sun but is light.
+
+## Results with the labels
+
+analyze.py was run again after filling in my_labels.csv. The crosswalk chart (results/crosswalk_vs_none.png) was made.
+
+| group | clips | mean zone_percent | median zone_percent | clips with 0 zone frames |
+|---|---|---|---|---|
+| crosswalk no | 8 | 12.1 | 8.4 | 2 |
+| crosswalk yes | 10 | 25.0 | 5.3 | 5 |
+| signal no | 15 | 12.0 | | |
+| signal yes | 3 | 55.6 | | |
+| day | 16 | 21.7 | | |
+| night | 2 | 0.0 | | |
+| weather clear | 11 | 22.3 | | |
+| weather rain | 5 | 19.2 | | |
+| weather snow | 2 | 3.0 | | |
+
+The mean and the median point in different directions for the crosswalk groups, so the bar chart of means on its own would be misleading. The README says this next to the chart.
+
+Checked by looking at the detections for video_0025 (crosswalk, 0 zone frames): between frames 120 and 152 the group's feet are at 0.64 to 0.68 of the image height while they are in the middle of the road, which is just above the zone's top edge at 0.68. After frame 153, when their feet are lower in the image, their feet x position is 0.01 to 0.38 of the width, which is left of the zone.

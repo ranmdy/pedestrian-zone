@@ -1,1 +1,19 @@
 clip,crosswalk,signal,time_of_day,weather,note
+video_0007,no,no,day,snow,snowy street and people cross mid-block on the left
+video_0009,no,no,day,clear,pedestrians cross mid-block and one pulls a cart
+video_0010,no,no,day,clear,pedestrian crosses mid-block ahead
+video_0012,yes,yes,day,clear,wide road ending at a signalised junction with crosswalk lines
+video_0015,yes,no,day,rain,wipers on and zebra crossing at a stop sign junction
+video_0019,no,no,day,clear,slow downtown traffic and pedestrians stay on the sidewalk
+video_0020,no,no,day,clear,downtown with a statue of human figures on the left
+video_0023,yes,no,night,rain,dark and wet with yield triangles and a crossing sign
+video_0025,yes,no,day,clear,group crosses at a yield-triangle crossing
+video_0026,yes,no,night,clear,dark and pedestrians cross at a marked crossing ahead
+video_0039,yes,yes,day,clear,busy city junction with many people crossing in front
+video_0041,no,no,day,clear,low sun and snow beside the road and no markings seen
+video_0044,yes,no,day,clear,pedestrian crossover with overhead X sign and amber beacons
+video_0046,yes,no,day,clear,pedestrian crossover and one person crosses on the zebra
+video_0056,no,no,day,rain,wipers on and people cross mid-block before a garage entrance
+video_0099,yes,no,day,rain,second camera with wipers and a zebra crossing ahead
+video_0127,no,no,day,snow,second camera on a narrow street with snowbanks
+video_0137,yes,yes,day,rain,second camera and a person crosses at a signed crossing by lights
