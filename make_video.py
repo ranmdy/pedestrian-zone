@@ -5,8 +5,8 @@ import pandas as pd
 
 CLIPS_FOLDER = "videos"
 RESULTS_FOLDER = "results"
-CLIP_NAME = "video_0002"
-SNAPSHOT_FRAME = 100  # this frame is also saved as a picture for the README
+CLIP_NAME = "video_0046"
+SNAPSHOT_FRAME = 94  # this frame is also saved as a picture for the README
 
 # danger zone corners as fractions of the image width and height
 # keep these the same as in analyze.py

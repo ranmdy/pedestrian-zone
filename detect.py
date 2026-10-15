@@ -7,7 +7,7 @@ CLIPS_FOLDER = "videos"
 RESULTS_FOLDER = "results"
 MODEL_FILE = "yolov8n.pt"
 CONF_MIN = 0.4
-MAX_CLIPS = 2  # 2 clips for a first test, set to 0 to run on every clip
+MAX_CLIPS = 0  # 2 clips for a first test, set to 0 to run on every clip
 
 # COCO class numbers for the classes we keep
 KEEP_CLASSES = {0: "person", 1: "bicycle", 2: "car", 3: "motorcycle", 5: "bus", 7: "truck"}

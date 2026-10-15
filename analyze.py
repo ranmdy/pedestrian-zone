@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 RESULTS_FOLDER = "results"
 LABELS_FILE = "my_labels.csv"
-EXAMPLE_CLIP = "video_0001"  # clip used for the box height chart
+EXAMPLE_CLIP = "video_0046"  # clip used for the box height chart
 
 # danger zone corners as fractions of the image width and height
 # keep these the same as in make_video.py

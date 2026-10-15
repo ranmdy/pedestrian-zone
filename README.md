@@ -17,7 +17,7 @@ How often, and for how long, pedestrians are in the road space right in front of
 7. Makes three charts: frames in the zone per clip, crosswalk vs no crosswalk, and pedestrian box height over time for one clip.
 8. Saves one annotated example video and one example frame.
 
-Example frame (video_0002, frame 100). The yellow trapezoid is the danger zone. Red boxes are pedestrians with their feet inside the zone, green boxes are pedestrians outside it, and blue boxes are vehicles. The dot under each pedestrian box is the feet point.
+Example frame (video_0046, frame 94). A pedestrian is walking across a marked crosswalk ahead of the car. The yellow trapezoid is the danger zone. Red boxes are pedestrians with their feet inside the zone, green boxes are pedestrians outside it, and blue boxes are vehicles. The dot under each pedestrian box is the feet point.
 
 ![Example annotated frame](results/example_frame.jpg)
 
@@ -25,7 +25,7 @@ Example frame (video_0002, frame 100). The yellow trapezoid is the danger zone. 
 
 The clips come from JAAD (Joint Attention in Autonomous Driving), made by Amir Rasouli, Iuliia Kotseruba and John K. Tsotsos at York University, Toronto. JAAD has 346 short clips filmed from inside a car, mostly in North America and Europe, with hand-made boxes and behaviour labels for pedestrians. The annotations and code are at https://github.com/ykotseruba/JAAD.
 
-Licence: the JAAD video clips are licensed under the Creative Commons Attribution 4.0 International License, and the JAAD code is under the MIT License. The example frame in this README comes from JAAD clip video_0002.
+Licence: the JAAD video clips are licensed under the Creative Commons Attribution 4.0 International License, and the JAAD code is under the MIT License. The example frame in this README comes from JAAD clip video_0046.
 
 The videos are not included in this repository. To get them:
 
@@ -33,7 +33,27 @@ The videos are not included in this repository. To get them:
 2. Unzip it. The clips are named `video_0001.mp4` to `video_0346.mp4`.
 3. Copy the clips you want into a folder called `videos/` inside this project.
 
-Clips I used and why: [fill in: list the 15 to 20 clips and how you chose them]
+### Clips I used and why
+
+I used 18 clips: 9 where JAAD marks a pedestrian crossing in the scene and 9 where it does not, so the crosswalk comparison has the same number of clips on each side. JAAD's per-frame traffic annotations (`annotations_traffic/video_XXXX_traffic.xml`, the `ped_crossing` flag) were used only to choose the clips. The crosswalk values in `my_labels.csv` are my own, from watching each clip.
+
+Rules for choosing:
+
+1. Location is `street` and road type is `street` in JAAD. Parking lots, plazas and garages were left out, because the question is about pedestrians on roads.
+2. JAAD has at least 30 frames with a labelled pedestrian, so there is something to detect.
+3. Full HD (1920 x 1080), which covers 336 of the 346 clips.
+4. In each group, I included the night, evening, rain and snow clips that were available, so the sample is not only clear daytime scenes.
+5. The rest of each group was filled with the first clear or cloudy daytime clips in number order, so I did not pick clips by looking at the results.
+
+| group (JAAD crossing flag) | clips |
+|---|---|
+| crossing | video_0015 (rain), video_0023 (night, rain), video_0025, video_0026 (night), video_0039 (60 fps, city centre), video_0041 (evening, 60 fps), video_0044, video_0046, video_0099 (rain, second camera) |
+| no crossing | video_0007 (snow), video_0009, video_0010, video_0012, video_0019, video_0020, video_0056 (rain), video_0127 (second camera), video_0137 (rain, second camera) |
+
+Notes on the clips:
+- video_0099, video_0127 and video_0137 were filmed with a different car and camera. Part of the camera mount shows in the top right corner, and the windscreen wiper is visible.
+- video_0039 and video_0041 are 59.94 fps. All the others are 29.97 or 30 fps.
+- JAAD tags video_0127 as nighttime, but its frames are in daylight with snow on the ground.
 
 ## Setup
 
@@ -89,7 +109,7 @@ The zone is a trapezoid. Its corners are set as fractions of the image width and
            0.20          0.80
 ```
 
-The zone is narrow at the top and wide at the bottom because the road ahead looks narrower the further away it is (perspective). I placed it by looking at frames from the test clips: the top edge is a little below the horizon, and the bottom edge goes past the start of the car's hood.
+The zone is narrow at the top and wide at the bottom because the road ahead looks narrower the further away it is (perspective). I placed it by looking at frames from the test clips: the top edge is a little below the horizon, and the bottom edge goes past the start of the car's hood. I then drew it on the middle frame of all 18 clips to check that it lies on the road in front of the car in each one, including the clips from the second camera.
 
 To test if a point is inside, `point_in_zone` first checks that the point is between the top and bottom edges. Then it works out where the left and right edges are at that height, by moving along each slanted side in proportion to how far down the point is, and checks that the point is between them.
 
@@ -114,25 +134,64 @@ How I decided each value: [WRITE THIS YOURSELF: for example what counted as a cr
 
 ## Results
 
+These numbers come from running `detect.py` and `analyze.py` on the 18 clips above (5010 frames, 155 seconds of video). `detect.py` kept 19517 detections: 13468 car, 5446 person, 385 truck, 217 bus and 1 bicycle.
+
 `results/summary.csv` has one row per clip with these columns: frames, clip_seconds, ped_frames (frames with at least one pedestrian), zone_frames (frames with a pedestrian in the zone), zone_percent, zone_seconds, first_ped_seconds (time before the first pedestrian is seen), max_box_height (tallest pedestrian box in pixels) and my labels.
 
-| clip | ped_frames | zone_frames | zone_percent | first_ped_seconds | max_box_height | crosswalk |
-|---|---|---|---|---|---|---|
-| [fill from summary.csv after running] | | | | | | |
+| clip | seconds | ped_frames | zone_frames | zone_percent | zone_seconds | first_ped_seconds | max_box_height | JAAD crossing flag | crosswalk (my label) |
+|---|---|---|---|---|---|---|---|---|---|
+| video_0007 | 4.0 | 83 | 0 | 0.0 | 0.0 | 0.0 | 258 | no | [from my_labels.csv] |
+| video_0009 | 4.0 | 81 | 2 | 1.7 | 0.1 | 0.07 | 450 | no | |
+| video_0010 | 3.0 | 44 | 12 | 13.3 | 0.4 | 1.13 | 427 | no | |
+| video_0012 | 4.0 | 33 | 0 | 0.0 | 0.0 | 1.84 | 224 | no | |
+| video_0015 | 14.0 | 104 | 0 | 0.0 | 0.0 | 0.97 | 150 | yes | |
+| video_0019 | 16.0 | 262 | 0 | 0.0 | 0.0 | 0.0 | 133 | no | |
+| video_0020 | 18.0 | 515 | 136 | 25.2 | 4.5 | 0.0 | 657 (b) | no | |
+| video_0023 | 8.0 | 0 | 0 | 0.0 | 0.0 | none seen | 0 | yes | |
+| video_0025 | 7.0 | 96 | 0 | 0.0 | 0.0 | 2.84 | 374 | yes | |
+| video_0026 | 17.0 | 282 | 0 | 0.0 | 0.0 | 0.0 | 280 | yes | |
+| video_0039 | 6.0 (a) | 360 | 331 | 91.9 | 5.5 | 0.0 | 414 | yes | |
+| video_0041 | 6.0 (a) | 237 | 144 | 40.0 | 2.4 | 0.58 | 299 | yes | |
+| video_0044 | 7.0 | 168 | 80 | 38.1 | 2.7 | 1.4 | 342 | yes | |
+| video_0046 | 7.0 | 161 | 73 | 34.8 | 2.4 | 0.0 | 340 | yes | |
+| video_0056 | 9.0 | 241 | 29 | 10.7 | 1.0 | 0.0 | 338 | no | |
+| video_0099 | 6.0 | 59 | 19 | 10.6 | 0.6 | 0.0 | 935 (c) | yes | |
+| video_0127 | 12.0 | 133 | 22 | 6.1 | 0.7 | 0.0 | 734 (c) | no | |
+| video_0137 | 7.0 | 182 | 157 | 74.8 | 5.2 | 0.3 | 683 (c) | no | |
+
+(a) 59.94 fps, so these clips have about twice as many frames per second as the others. Compare clips using zone_percent or zone_seconds, not zone_frames.
+(b) The tallest "person" boxes in video_0020 are on a large statue of human figures beside the road, not a real pedestrian.
+(c) In the three clips from the second camera, YOLO sometimes marks the dark camera mount in the top right corner as a person (24 boxes in total, confidence 0.41 to 0.49). These boxes are never in the zone, so zone_frames is not affected, but max_box_height is. Without them the tallest boxes are 415 (video_0099), 247 (video_0127) and 464 (video_0137). The mount boxes also add 4 frames to ped_frames in video_0127.
+
+A first_ped_seconds of 0.0 means a pedestrian was already visible in the first frame.
 
 Frames with a pedestrian in the danger zone, per clip:
 
 ![Zone frames per clip](results/zone_frames_per_clip.png)
 
-Crosswalk vs no crosswalk (average percent of frames with a pedestrian in the zone). I used percent instead of frame counts because the clips have different lengths:
+Crosswalk vs no crosswalk (average percent of frames with a pedestrian in the zone). I used percent instead of frame counts because the clips have different lengths. This chart is made from my own labels in `my_labels.csv`:
 
 ![Crosswalk vs no crosswalk](results/crosswalk_vs_none.png)
 
-Tallest pedestrian box over time for one clip:
+[this chart appears after my_labels.csv is filled in and analyze.py is run again]
 
-![Box height over time](results/box_height_video_0001.png)
+Tallest pedestrian box over time for video_0046. One pedestrian crosses the road ahead on a marked crosswalk. Their box grows from about 60 to 340 pixels as the car gets closer, then they leave the frame at about 6.6 seconds. The few low points after that are a different, smaller pedestrian further away. With no tracking, the chart cannot tell people apart.
 
-Check against JAAD hand labels: [fill from results/jaad_check.csv after running]
+![Box height over time](results/box_height_video_0046.png)
+
+### Check against JAAD hand labels
+
+`check_against_jaad.py` was run on three clips chosen to be different from each other: a daytime crosswalk with one pedestrian (video_0046), a busy city centre crossing (video_0039) and a night clip in rain (video_0023). A JAAD pedestrian box counts as found when a YOLO person box overlaps it with an IoU of at least 0.5. Fully hidden pedestrians are left out.
+
+| clip | scene | JAAD pedestrian boxes | found by YOLO | missed | missed % | missed, small (under 100 px tall) | missed, large |
+|---|---|---|---|---|---|---|---|
+| video_0046 | day, one pedestrian | 200 | 157 | 43 | 21.5 | 31 | 12 |
+| video_0039 | day, busy city crossing | 1762 | 865 | 897 | 50.9 | 469 | 428 |
+| video_0023 | night, rain | 394 | 0 | 394 | 100.0 | 232 | 162 |
+
+In video_0023, YOLO did not find any pedestrian at all. To check that this is not only caused by the 0.4 confidence limit, I ran YOLO on the same clip with a very low limit (0.05). Its highest person confidence in the whole clip was 0.36, and only 3 of the 240 frames had a person above 0.25. So the model does not see these pedestrians in the dark and rain, whatever the limit is.
+
+More details of every test run are in [test_notes.md](test_notes.md).
 
 ## What I noticed
 
@@ -143,9 +202,12 @@ Check against JAAD hand labels: [fill from results/jaad_check.csv after running]
 - Pixel position is not real distance. There is no camera calibration, so "in the zone" means "in this part of the image", not "within a number of metres of the car".
 - Box height depends on how tall the person is, not only on how close they are. A child close by and an adult further away can have the same box height.
 - When a person is very close, the hood hides their feet, so the bottom of the box is the hood line and not their real feet.
-- YOLO misses small, far away or partly hidden pedestrians, and does worse at night. It can also draw two boxes on one person, or one box around two people walking close together.
+- YOLO misses small, far away or partly hidden pedestrians. In the JAAD check it missed 21.5% of pedestrian boxes in a quiet daytime clip and 50.9% in a busy city crossing. It can also draw two boxes on one person, or one box around two people walking close together.
+- YOLO does much worse at night. In the night and rain clip (video_0023) it found none of the pedestrians JAAD labelled, so that clip shows 0 frames in the zone even though people are there. A clip with no detections is not the same as a clip with no pedestrians.
+- YOLO also finds "people" that are not pedestrians: a statue of human figures (video_0020) and the camera mount in the corner of the second camera's clips. These inflate max_box_height for those clips. I did not filter them out, so that the code stays simple and the numbers show what the detector really did.
 - The trapezoid is fixed. It is wrong on curves and turns, and it was placed using frames from one camera position. Clips filmed with the camera mounted differently would need a different zone.
-- The sample is small (15 to 20 clips) and the scene labels are my own judgement.
+- The sample is small (18 clips, 155 seconds of video) and the scene labels are my own judgement. A few clips with a lot of pedestrians in the zone (video_0039, video_0137) can move a group average a long way.
+- Frame counts depend on frame rate. Two clips are 59.94 fps and the rest about 30 fps, so zone_frames is not comparable between them. zone_percent and zone_seconds are.
 - There is no tracking, so the same person is counted again in every frame they appear in. The tallest-box chart can also jump from one person to another.
 
 ## What I would do next

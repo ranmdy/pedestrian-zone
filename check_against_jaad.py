@@ -4,7 +4,7 @@ import pandas as pd
 
 ANNOTATIONS_FOLDER = "jaad_annotations"
 RESULTS_FOLDER = "results"
-CHECK_CLIPS = ["video_0001", "video_0002"]  # pick 3 of your clips once they are all run
+CHECK_CLIPS = ["video_0023", "video_0039", "video_0046"]  # pick 3 of your clips once they are all run
 IOU_MIN = 0.5  # how much two boxes must overlap to count as the same person
 SMALL_BOX = 100  # boxes shorter than this many pixels count as "small" (far away)
 
